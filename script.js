@@ -28,8 +28,20 @@ if (navigator.geolocation) {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
 
-      L.marker(coords).addTo(map)
-        .bindPopup('A pretty CSS popup.<br> Easily customizable.')
-        .openPopup();
+      map.on('click', (mapEvent) => {
+        const { lat, lng } = mapEvent.latlng;
+
+        L.marker([ lat, lng ])
+          .addTo(map)
+          .bindPopup(L.popup({
+            maxWidth: 250,
+            minWidth: 100,
+            autoClose: false,
+            closeOnClick: false,
+            className: 'running-popup'
+          }))
+          .setPopupContent('Workout')
+          .openPopup();
+      });
     }, errorHandler('Could not get your position'));
 } 
