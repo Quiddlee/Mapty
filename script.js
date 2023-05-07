@@ -191,8 +191,12 @@ class App {
   }
 
   _renderWorkout(workout) {
+    const work = document.createElement('div');
     let html = `
       <li class='workout workout--${ workout.type }' data-id='${ workout.id }'>
+        <span class='workout__remove'>
+          <span class='workout__remove__cross'>✕</span>
+        </span>
         <h2 class='workout__title'>${ workout.description }</h2>
         <div class='workout__details'>
           <span class='workout__icon'>${ workout.type === 'running' ? '🏃' : '🚴' }</span>
@@ -236,10 +240,14 @@ class App {
       `;
     }
 
-    form.insertAdjacentHTML('afterend', html);
+    work.innerHTML = html;
+    form.insertAdjacentElement('afterend', work);
+    work.onclick = this._removeWorkout.bind(this);
   }
 
   _moveToPopup(evt) {
+    if (evt.target.classList.contains('workout__remove') ||
+      evt.target.classList.contains('workout__remove__cross')) return;
     const workoutEl = evt.target.closest('.workout');
 
     if (!workoutEl) return;
@@ -275,6 +283,36 @@ class App {
   reset() {
     localStorage.removeItem('workouts');
     location.reload();
+  }
+
+  _removeWorkout(evt) {
+    const target = evt.target;
+
+    if (!target.classList.contains('workout__remove')
+      && !target.classList.contains('workout__remove__cross')) return;
+
+    const workoutRemove = target.closest('.workout__remove');
+    workoutRemove.querySelector('.workout__remove__cross').remove();
+    const currWorkout = workoutRemove.closest('.workout');
+
+    const workoutIndex = this.#workouts.findIndex(work => {
+      if (currWorkout.dataset.id === work.id) return work;
+    });
+
+    this.#workouts.splice(workoutIndex, 1);
+    this._setLocalStorage();
+
+    workoutRemove.style.scale = '30';
+
+    workoutRemove.ontransitionend = () => {
+      workoutRemove.remove();
+      currWorkout.remove();
+
+      document.querySelectorAll('.leaflet-popup').forEach(popup => popup.remove());
+      document.querySelectorAll('.leaflet-marker-icon').forEach(marker => marker.remove());
+      [ ...document.querySelector('.leaflet-shadow-pane').children ].forEach(pane => pane.remove());
+      this.#workouts.forEach(work => this._renderWorkoutMarker(work));
+    };
   }
 }
 
