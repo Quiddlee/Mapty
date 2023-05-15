@@ -1,6 +1,6 @@
 # Mapty app | JavaScript Course Project
 
-**Preview: https://quiddlee.github.io/Bankist-App**
+**Preview: https://quiddlee.github.io/Mapty**
 
 **Stack:**
 
