@@ -303,6 +303,7 @@ class App {
     this._setLocalStorage();
 
     workoutRemove.style.scale = '30';
+    currWorkout.style.opacity = 0;
 
     workoutRemove.ontransitionend = () => {
       workoutRemove.remove();

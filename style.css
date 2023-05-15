@@ -78,6 +78,7 @@ a:visited {
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 0.75rem 1.5rem;
   overflow: hidden;
+  transition: all .4s .1s;
 }
 
 .workout--running {
